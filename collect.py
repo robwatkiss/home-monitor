@@ -24,7 +24,7 @@ def get_now():
 # - timestamp
 def get_current_state():
     conn = get_connection()
-    
+
     all_values = []
 
     # Get home state
@@ -72,12 +72,22 @@ def get_current_state():
 
     # Get climate for each zone
     for zone in zones:
-        zone_state = conn.getClimate(zone=zone['id'])
+        zone_state = conn.getZoneState(zone=zone['id'])
+
         all_values.append({
             'location': zone['name'],
             'location_id': zone['id'],
             'measurement_type': 'ZONE_TEMPERATURE',
-            'measurement_value_float': zone_state['temperature'],
+            'measurement_value_float': zone_state.current_temp,
+            'measurement_value_string': None,
+            'timestamp': zone_state.current_temp_timestamp
+        })
+
+        all_values.append({
+            'location': zone['name'],
+            'location_id': zone['id'],
+            'measurement_type': 'ZONE_TEMPERATURE_TARGET',
+            'measurement_value_float': zone_state.target_temp,
             'measurement_value_string': None,
             'timestamp': get_now()
         })
@@ -86,9 +96,9 @@ def get_current_state():
             'location': zone['name'],
             'location_id': zone['id'],
             'measurement_type': 'ZONE_HUMIDITY',
-            'measurement_value_float': zone_state['humidity'],
+            'measurement_value_float': zone_state.current_humidity,
             'measurement_value_string': None,
-            'timestamp': get_now()
+            'timestamp': zone_state.current_humidity_timestamp
         })
 
     return all_values
