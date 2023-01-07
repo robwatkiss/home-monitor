@@ -1,0 +1,3 @@
+python-tado==0.13.0
+python-dotenv==0.21.0
+google-cloud-bigquery==3.4.1
